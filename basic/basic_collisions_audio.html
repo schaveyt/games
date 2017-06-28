@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Basic Collisions Audio</title>
+    </head>
+    
+<canvas id="gc" width="400" height="650" style="border:4px solid #cc6600;"> </canvas>
+<audio id="audio_jump" src="audio/jump.mp3" preload="auto"></audio>
+<script>
+
+    var px = 0;
+    var py = 0;
+    var pw = 30;
+    var ph = 30;
+    var gravity = 3.5;
+    var mx = 5;
+    var my = 50;
+    var crashed = false;
+    var game_over = false;
+
+    var game_over_text_y;
+
+    var audio_jump = null;
+    
+    window.onload=function()
+    {
+        canv = document.getElementById("gc");
+        paintbrush = canv.getContext("2d");
+        setInterval(update, 1000/30);
+        document.addEventListener("keyup", keyUp);
+        document.addEventListener("keydown", keyDown);
+        audio_jump = document.getElementById('audio_jump');
+
+        reset();
+    }
+
+    function reset()
+    {
+        px = canv.width / 2;
+        py = 0;
+        pw = 30;
+        ph = 30;
+        gravity = 5;
+        mx = 5;
+        my = 70;
+        crashed = false;
+        game_over = false;
+    }
+
+    function update()
+    {
+        apply_physics();
+
+        // Paint the background
+        //
+        paintbrush.fillStyle="black";
+        paintbrush.fillRect(0,0, canv.width, canv.height);
+
+        paint_player();
+
+        if (game_over === true)
+        {
+            paint_game_over_text();
+            paint_reset_text();
+        }
+
+    }
+
+    function apply_physics()
+    {
+        if (crashed === true)
+        {
+            return;
+        }
+
+        py = py + gravity;
+
+        // detect if we have hit the floor
+        pb = py + ph;
+        if (pb > canv.height)
+        {
+            py = canv.height - (ph / 2);
+            crashed = true;
+            game_over = true;
+        }
+    }
+
+    function paint_player()
+    {
+        // Paint the player
+        //
+        p_center_x = px-(pw / 2);
+        p_center_y = py-(ph / 2);
+        paintbrush.fillStyle="white";
+        paintbrush.fillRect(p_center_x, p_center_y, pw, ph);
+        paintbrush.fillStyle="cyan";
+        paintbrush.fillText(px + "," + py, p_center_x - 15, p_center_y - 10);
+    }
+
+    function paint_game_over_text()
+    {
+        var text = "GAME OVER";
+        old_font = paintbrush.font;
+
+        paintbrush.fillStyle="red";
+        paintbrush.font = "50px Lucida Console,Lucida Sans Typewriter";
+
+        var text_width = paintbrush.measureText(text).width;
+        var text_x = canv.width / 2;
+        text_x = text_x - (text_width / 2);
+
+        game_over_text_y = canv.height / 3;
+
+        paintbrush.fillText(text, text_x, game_over_text_y);
+        
+        paintbrush.font = old_font;
+    }
+
+    var reset_text_frames_visible = 0;
+    var reset_text_frames_invisible = 0;
+    var reset_text_visible = true;
+
+    function paint_reset_text()
+    {
+        if (!reset_text_visible)
+        {
+            reset_text_frames_invisible++;
+            if (reset_text_frames_invisible % 20 === 0)
+            {
+                reset_text_visible = true;
+                reset_text_frames_invisible = 0;
+            }
+            return;
+        }
+
+        reset_text_frames_visible++;
+        if (reset_text_frames_visible % 30 === 0)
+        {
+            reset_text_visible = false;
+            reset_text_frames_visible = 0;
+        }
+
+        var text = "Press ENTER to reset.";
+        old_font = paintbrush.font;
+
+        paintbrush.fillStyle="red";
+        paintbrush.font = "15px Lucida Console,Lucida Sans Typewriter";
+
+        var text_width = paintbrush.measureText(text).width;
+        var text_x = canv.width / 2;
+        text_x = text_x - (text_width / 2);
+
+        paintbrush.fillText(text, text_x, game_over_text_y + 50);
+        
+        paintbrush.font = old_font;
+    }
+
+    function keyUp(evt)
+    {
+        if (game_over === true)
+        {
+            return;
+        }
+
+        // Up arrow key from keyboard
+        if(evt.keyCode === 38)
+        {
+            py = py - my;
+        }
+
+    }
+
+    function keyDown(evt)
+    {
+        if (game_over === true)
+        {
+            if (evt.keyCode === 13)
+            {
+                reset();
+            }
+            return;
+        }
+
+        // Left arrow key from keyboard
+        else if(evt.keyCode === 37)
+        {
+            px = px - mx;
+        }
+
+        // Up arrow key from keyboard
+        else if(evt.keyCode === 38)
+        {
+            play_audio_jump();
+            py = py - (my * .25);
+        }
+
+
+        // Right arrow key from keyboard
+        else if(evt.keyCode === 39)
+        {
+             px = px + mx;
+        }
+    }
+
+    function play_audio_jump()
+    {
+        audio_jump.play();
+    }
+
+    
+</script>
+</html>
+
+
+

@@ -14,6 +14,18 @@
 <audio id="audio_gameover" src="audio/gameover.mp3" preload="auto"></audio>
 <script>
 
+
+    var fps = 20;
+
+    window.requestAnimFrame = (function(callback) {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+        function(callback) {
+          window.setTimeout(callback, 1000 / fps);
+        };
+      })();
+
+
+
     var px = 0;
     var py = 0;
     var pw = 100;
@@ -42,6 +54,8 @@
     var plats_max_count = 3;
     var plats_max_width = 300;
     var plats_fixed_height = 10;
+
+    var start = null;
     
     window.onload=function()
     {
@@ -57,6 +71,38 @@
         audio_jump = document.getElementById('audio_jump');
         audio_gameover = document.getElementById('audio_gameover');
 
+        canv.addEventListener("touchstart", function (e) {
+            
+            var e = new Event("keydown");
+            e.key="a";    // just enter the char you want to send 
+            e.keyCode=38;
+            e.which=e.keyCode;
+            e.altKey=false;
+            e.ctrlKey=true;
+            e.shiftKey=false;
+            e.metaKey=false;
+            e.bubbles=true;
+
+            document.dispatchEvent(e);
+
+            
+            var e = new Event("keyup");
+            e.key="a";    // just enter the char you want to send 
+            e.keyCode=38;
+            e.which=e.keyCode;
+            e.altKey=false;
+            e.ctrlKey=true;
+            e.shiftKey=false;
+            e.metaKey=false;
+            e.bubbles=true;
+
+            setTimeout(function() {
+                document.dispatchEvent(e);
+            }, 250);
+             
+
+        }, false);
+
         for (i=0; i< plats_max_count; i++)
         {
             plats.push({
@@ -69,7 +115,7 @@
 
         reset();
 
-        setInterval(update, 1000/30);
+        animate();
     }
 
     function resize_canvas()
@@ -138,7 +184,8 @@
         } 
     }
 
-    function update()
+
+    function animate()
     {
         apply_physics();
 
@@ -165,6 +212,9 @@
             paint_player();
         }
 
+        requestAnimFrame(function() {
+          animate();
+        });
     }
 
     function apply_physics()
@@ -263,11 +313,6 @@
         let pb = get_player_bottom();
         let pl = Math.floor(px - (pw / 2));
         let pr = px + pw;
-
-        if (pb >= 485)
-        {
-            console.log("x");
-        }
 
         // detect if play landed on platform
         //
@@ -470,7 +515,6 @@
         audio_jump.play();
     }
 
-    
 </script>
 </html>
 

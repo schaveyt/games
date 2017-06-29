@@ -73,32 +73,49 @@
 
         canv.addEventListener("touchstart", function (e) {
             
-            var e = new Event("keydown");
-            e.key="a";    // just enter the char you want to send 
-            e.keyCode=38;
-            e.which=e.keyCode;
-            e.altKey=false;
-            e.ctrlKey=true;
-            e.shiftKey=false;
-            e.metaKey=false;
-            e.bubbles=true;
+            if (game_over)
+            {
+                var e = new Event("keydown");
+                e.key="enter";    // just enter the char you want to send 
+                e.keyCode=13;
+                e.which=e.keyCode;
+                e.altKey=false;
+                e.ctrlKey=true;
+                e.shiftKey=false;
+                e.metaKey=false;
+                e.bubbles=true;
 
-            document.dispatchEvent(e);
-
-            
-            var e = new Event("keyup");
-            e.key="a";    // just enter the char you want to send 
-            e.keyCode=38;
-            e.which=e.keyCode;
-            e.altKey=false;
-            e.ctrlKey=true;
-            e.shiftKey=false;
-            e.metaKey=false;
-            e.bubbles=true;
-
-            setTimeout(function() {
                 document.dispatchEvent(e);
-            }, 250);
+            }
+            else
+            {
+                var e = new Event("keydown");
+                e.key="a";    // just enter the char you want to send 
+                e.keyCode=38;
+                e.which=e.keyCode;
+                e.altKey=false;
+                e.ctrlKey=true;
+                e.shiftKey=false;
+                e.metaKey=false;
+                e.bubbles=true;
+
+                document.dispatchEvent(e);
+
+                
+                var e = new Event("keyup");
+                e.key="a";    // just enter the char you want to send 
+                e.keyCode=38;
+                e.which=e.keyCode;
+                e.altKey=false;
+                e.ctrlKey=true;
+                e.shiftKey=false;
+                e.metaKey=false;
+                e.bubbles=true;
+
+                setTimeout(function() {
+                    document.dispatchEvent(e);
+                }, 250);
+            }
              
 
         }, false);
@@ -448,7 +465,7 @@
 
     function keyUp(evt)
     {
-        console.log("ku::");
+        //console.log("ku::");
 
         // Left arrow key from keyboard
         if(evt.keyCode === 37)
@@ -476,11 +493,11 @@
 
     function keyDown(evt)
     {
-        console.log("kd::");
+        //console.log("kd::");
 
         if (game_over)
         {
-            console.log("kd::gameover");
+            //console.log("kd::gameover");
             if (evt.keyCode === 13)
             {
                 reset();

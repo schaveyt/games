@@ -146,7 +146,24 @@
         for(i=0; i < count; i++)
         {
             plats[i].x -= 5;
+
+            // if the platform goes off the screen,
+            // recycle it and have it start back on
+            // right side of the screen but placed
+            // at a randon height.
+            //
+            if (platform_is_offscreen(i))
+            {
+                plats[i].x = canv.width + 10;
+                plats[i].y = Math.random() * canv.height;
+            }
         }
+    }
+
+    function platform_is_offscreen(idx)
+    {
+        let platform_top_right_edge = plats[idx].x + plats[idx].w;
+        return platform_top_right_edge < 0;
     }
 
     function apply_player_movements()

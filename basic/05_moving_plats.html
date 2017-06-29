@@ -5,11 +5,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
         <title>Basic Collisions Audio</title>
     </head>
     
-<canvas id="gc" width="400" height="650" style="border:4px solid #f0f0f0;"> </canvas>
+<canvas id="gc" width="450" height="720" style="border:4px solid #f0f0f0;"> </canvas>
 <audio id="audio_jump" src="audio/jump.mp3" preload="auto"></audio>
 <audio id="audio_gameover" src="audio/gameover.mp3" preload="auto"></audio>
 <script>
@@ -46,6 +46,11 @@
     window.onload=function()
     {
         canv = document.getElementById("gc");
+
+        window.addEventListener('resize', resize_canvas, false);
+        window.addEventListener('orientationchange', resize_canvas, false);
+        resize_canvas();
+
         paintbrush = canv.getContext("2d"); 
         document.addEventListener("keyup", keyUp);
         document.addEventListener("keydown", keyDown);
@@ -65,6 +70,40 @@
         reset();
 
         setInterval(update, 1000/30);
+    }
+
+    function resize_canvas()
+    {
+        // Set canvas dimensions
+        var w_width = window.innerWidth;
+        var w_height = w_width * 1.625;
+
+        if (w_width >= 450)
+        {
+            w_width = 450;
+            w_height = w_width * 1.625;
+        }
+
+        if (w_height >= 800)
+        {
+            w_height = 800;
+            w_width = w_height / 1.625;
+        }
+
+        if (w_width <= 150)
+        {
+            w_width = 150;
+            w_height = w_width * 1.625;
+        }
+
+        if (w_height <= 300)
+        {
+            w_height = 300;
+            w_width = w_height / 1.625;
+        }
+
+        canv.width = w_width - 30;
+        canv.height = w_height - 55;
     }
 
     function reset()
@@ -358,7 +397,8 @@
     function paint_hud()
     {
         paintbrush.fillStyle="cyan";
-        paintbrush.fillText("og: " + onGround, 2, canv.height - 10);
+        var text = "og: " + onGround + " w: " + canv.width + " h: " + canv.height;
+        paintbrush.fillText(text, 2, canv.height - 10);
     }
 
     function keyUp(evt)
